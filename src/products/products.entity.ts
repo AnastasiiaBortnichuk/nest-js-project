@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Products {
+export class Cosmetics {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,9 +23,9 @@ export class Products {
   @Column('text', { nullable: true })
   price_sign: string | null;
 
-  @Column({ nullable: true })
-  price: string;
-
   @Column('jsonb', { array: true, nullable: true })
   product_colors: { hex_value: string; colour_name: string }[];
+
+  @Column({ nullable: true })
+  price: string;
 }
