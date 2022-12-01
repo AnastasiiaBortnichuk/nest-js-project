@@ -15,14 +15,14 @@ export class ProductsService {
   }
 
   async getProductsByType(type: string): Promise<Cosmetics[]> {
-    return await (
-      await this.productsRepository.find()
-    ).filter((product) => product.product_type === type);
+    return (await this.productsRepository.find()).filter(
+      (product) => product.product_type === type,
+    );
   }
 
   async getProductById(id: string): Promise<Cosmetics> {
-    return await (
-      await this.productsRepository.find()
-    ).find((product) => product.id === +id);
+    return (await this.productsRepository.find()).find(
+      (product) => product.id === +id,
+    );
   }
 }
