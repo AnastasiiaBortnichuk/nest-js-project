@@ -5,6 +5,7 @@ import { ProductsController } from './products.controller';
 import { Cosmetics } from './products.entity';
 import { ProductsService } from './products.service';
 import { ConfigModule } from '@nestjs/config';
+import { TestProduct } from '../../common';
 
 describe('ProductsController', () => {
   let moduleRef: TestingModule;
@@ -25,29 +26,38 @@ describe('ProductsController', () => {
     productsService = moduleRef.get<ProductsService>(ProductsService);
   });
 
+  describe('getAllProducts', () => {
+    const result = new Promise<Cosmetics[]>(() => new Array(TestProduct));
+    it('should return All products object', async () => {
+      jest
+        .spyOn(productsService, 'getAllProducts')
+        .mockImplementation(async () => await result);
+
+      expect(productsController.getAllProducts()).toStrictEqual(result);
+    });
+  });
+
+  describe('getProductsByType', () => {
+    const result = new Promise<Cosmetics[]>(() => new Array(TestProduct));
+    it('should return products object of given type', async () => {
+      jest
+        .spyOn(productsService, 'getProductsByType')
+        .mockImplementation(async () => await result);
+
+      expect(productsController.getProductsByType('mascara')).toStrictEqual(
+        result,
+      );
+    });
+  });
+
   describe('getProductById', () => {
+    const result = new Promise<Cosmetics>(() => new Array(TestProduct));
     it('should return product object', async () => {
-      const product = {
-        id: 2,
-        brand: "L'Oreal",
-        name: "L' Oreal Paris Voluminous Mascara",
-        description: 'Voluminous - Volume Building Waterproof Mascara',
-        product_type: 'mascara',
-        api_featured_image:
-          '//s3.amazonaws.com/donovanbailey/products/api_featured_images/000/000/002/original/data?1514061106',
-        price_sign: null,
-        product_colors: [
-          { hex_value: '#231F20', colour_name: 'Black ' },
-          { hex_value: '#4D2C00', colour_name: 'Black Brown ' },
-          { hex_value: '#030000', colour_name: 'Carbon Black ' },
-        ],
-        price: '15',
-      };
-      const result = new Promise<Cosmetics>(() => product);
       jest
         .spyOn(productsService, 'getProductById')
         .mockImplementation(async () => await result);
-      expect(await productsController.getProductById('2', 'product')).toBe(
+
+      expect(productsController.getProductById('2', 'product')).toStrictEqual(
         result,
       );
     });
