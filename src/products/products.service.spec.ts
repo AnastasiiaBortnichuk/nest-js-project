@@ -8,6 +8,8 @@ import { ProductsService } from './products.service';
 
 describe('ProductsService', () => {
   let service: ProductsService;
+  const TotalProducts = 931;
+  const EyebrowProducts = 49;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,12 +30,12 @@ describe('ProductsService', () => {
 
   it('getAllProducts should work', async () => {
     const result = await service.getAllProducts();
-    expect(result.length).toEqual(931);
+    expect(result.length).toEqual(TotalProducts);
   });
 
   it('getProductsByType - should work', async () => {
     const result = await service.getProductsByType('eyebrow');
-    expect(result.length).toEqual(49);
+    expect(result.length).toEqual(EyebrowProducts);
   });
 
   it('getProductById - should work', async () => {
