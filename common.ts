@@ -1,3 +1,5 @@
+import Role from './src/users/role/role.enum';
+
 export const TestProduct = {
   id: 2,
   brand: "L'Oreal",
@@ -14,4 +16,11 @@ export const TestProduct = {
     { hex_value: '#030000', colour_name: 'Carbon Black ' },
   ],
   price: '15',
+};
+
+export const TestUser = {
+  username: 'TestsUser1',
+  email: 'testsuser1@gmail.com',
+  password: 'qwerty1',
+  roles: [Role.User],
 };

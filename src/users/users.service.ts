@@ -15,26 +15,13 @@ export class UsersService {
     return await this.usersRepository.find();
   }
 
-  async create(userData: CreateUserDto) {
+  async createUser(userData: CreateUserDto) {
     const newUser = await this.usersRepository.create(userData);
     await this.usersRepository.save(newUser);
     return newUser;
   }
 
-  async findUser(username: string): Promise<Users | undefined> {
-    const user = (await this.usersRepository.find()).find(
-      (user) => user.username === username,
-    );
-    if (user) {
-      return user;
-    }
-    throw new HttpException(
-      'User with this username does not exist',
-      HttpStatus.NOT_FOUND,
-    );
-  }
-
-  async getByEmail(email: string): Promise<Users | undefined> {
+  async getUserByEmail(email: string): Promise<Users | undefined> {
     const user = (await this.usersRepository.find()).find(
       (user) => user.email === email,
     );
@@ -47,7 +34,7 @@ export class UsersService {
     );
   }
 
-  async getById(id: number) {
+  async getUserById(id: number) {
     const user = (await this.usersRepository.find()).find(
       (user) => user.id === id,
     );

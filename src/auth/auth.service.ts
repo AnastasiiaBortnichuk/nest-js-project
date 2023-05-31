@@ -4,8 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import CreateUserDto from 'src/users/dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
-import { PostgresErrorCode } from 'src/database/postgresErrorCodes.enum';
-import { TokenPayload } from './tokenPayload.interface';
+import { PostgresErrorCode } from '../../src/database/postgresErrorCodes.enum';
+import { TokenPayload } from './interfaces/tokenPayload.interface';
 
 @Injectable()
 export class AuthService {
@@ -16,18 +16,17 @@ export class AuthService {
   ) {}
 
   async getAuthenticatedUser(email: string, plainTextPassword: string) {
-    try {
-      const user = await this.usersService.getByEmail(email);
+    const user = await this.usersService.getUserByEmail(email);
+    if (user) {
       await this.verifyPassword(plainTextPassword, user.password);
       user.password = undefined;
 
       return user;
-    } catch (error) {
-      throw new HttpException(
-        'Wrong credentials provided',
-        HttpStatus.BAD_REQUEST,
-      );
     }
+    throw new HttpException(
+      'Wrong credentials provided',
+      HttpStatus.BAD_REQUEST,
+    );
   }
 
   private async verifyPassword(
@@ -66,7 +65,7 @@ export class AuthService {
   async register(registrationData: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(registrationData.password, 10);
     try {
-      const createdUser = await this.usersService.create({
+      const createdUser = await this.usersService.createUser({
         ...registrationData,
         password: hashedPassword,
       });

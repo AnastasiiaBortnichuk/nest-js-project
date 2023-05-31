@@ -8,7 +8,7 @@ import { ProductsService } from './products.service';
 
 describe('ProductsService', () => {
   let service: ProductsService;
-  const TotalProducts = 931;
+  const TotalProducts = 928;
   const EyebrowProducts = 49;
 
   beforeEach(async () => {

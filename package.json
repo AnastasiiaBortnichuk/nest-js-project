@@ -86,7 +86,12 @@
     ],
     "coveragePathIgnorePatterns": [
       "app.module.(t|j)s",
-      "products.module.(t|j)s"
+      "products.module.(t|j)s",
+      "users.module.(t|j)s",
+      "auth.module.(t|j)s",
+      "createUser.dto.(t|j)s",
+      "jwt.strategy.(t|j)s",
+      "local.strategy.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

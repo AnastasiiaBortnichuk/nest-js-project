@@ -11,13 +11,13 @@ import {
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import CreateUserDto from '../users/dto/createUser.dto';
-import RequestWithUser from './requestWithUser.interface';
-import { LocalAuthenticationGuard } from './localAuthentication.guard';
-import JwtAuthenticationGuard from './jwt-authentication.guard';
+import RequestWithUser from './interfaces/requestWithUser.interface';
+import { LocalAuthenticationGuard } from './guards/localAuthentication.guard';
+import JwtAuthenticationGuard from './guards/jwt-authentication.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('register')
   async register(@Body() registrationData: CreateUserDto) {

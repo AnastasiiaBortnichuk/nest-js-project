@@ -13,9 +13,10 @@ import {
 } from '@nestjs/common';
 import { Cosmetics } from './products.entity';
 import { ProductsService } from './products.service';
-import Role from '../users/role.enum';
-import JwtAuthenticationGuard from '../auth/jwt-authentication.guard';
-import RoleGuard from 'src/users/role.guard';
+import Role from '../users/role/role.enum';
+import JwtAuthenticationGuard from '../auth/guards/jwt-authentication.guard';
+import RoleGuard from '../users/role/role.guard';
+import CreateProductDto from './dto/createProduct.dto';
 
 @Controller()
 @UseInterceptors(ClassSerializerInterceptor)
@@ -41,12 +42,15 @@ export class ProductsController {
 
   @Post()
   @UseGuards(JwtAuthenticationGuard)
-  async addProduct(@Body() product: Cosmetics) {
+  async addProduct(@Body() product: CreateProductDto) {
     return this.productsService.addProduct(product);
   }
 
   @Put(':id')
-  async updateProduct(@Param('id') id: string, @Body() product: Cosmetics) {
+  async updateProduct(
+    @Param('id') id: string,
+    @Body() product: CreateProductDto,
+  ) {
     return this.productsService.updateProduct(id, product);
   }
 
