@@ -16,15 +16,21 @@ export class UsersService {
   }
 
   async createUser(userData: CreateUserDto) {
-    const newUser = await this.usersRepository.create(userData);
-    await this.usersRepository.save(newUser);
-    return newUser;
+    const existingUser = await this.getUserByEmail(userData.email);
+    if (!existingUser) {
+      const newUser = this.usersRepository.create(userData);
+      await this.usersRepository.save(newUser);
+
+      return newUser;
+    }
+    throw new HttpException(
+      'User with this email already exists',
+      HttpStatus.BAD_REQUEST,
+    );
   }
 
   async getUserByEmail(email: string): Promise<Users | undefined> {
-    const user = (await this.usersRepository.find()).find(
-      (user) => user.email === email,
-    );
+    const user = await this.usersRepository.findOne({ where: { email } });
     if (user) {
       return user;
     }
@@ -35,9 +41,7 @@ export class UsersService {
   }
 
   async getUserById(id: number) {
-    const user = (await this.usersRepository.find()).find(
-      (user) => user.id === id,
-    );
+    const user = await this.usersRepository.findOne({ where: { id } });
     if (user) {
       return user;
     }

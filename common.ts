@@ -15,7 +15,7 @@ export const TestProduct = {
     { hex_value: '#4D2C00', colour_name: 'Black Brown ' },
     { hex_value: '#030000', colour_name: 'Carbon Black ' },
   ],
-  price: '15',
+  price: '25',
 };
 
 export const TestUser = {

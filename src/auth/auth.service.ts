@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import CreateUserDto from 'src/users/dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
-import { PostgresErrorCode } from '../../src/database/postgresErrorCodes.enum';
 import { TokenPayload } from './interfaces/tokenPayload.interface';
 
 @Injectable()
@@ -16,17 +15,18 @@ export class AuthService {
   ) {}
 
   async getAuthenticatedUser(email: string, plainTextPassword: string) {
-    const user = await this.usersService.getUserByEmail(email);
-    if (user) {
+    try {
+      const user = await this.usersService.getUserByEmail(email);
       await this.verifyPassword(plainTextPassword, user.password);
       user.password = undefined;
 
       return user;
+    } catch (error) {
+      throw new HttpException(
+        'Wrong credentials provided',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    throw new HttpException(
-      'Wrong credentials provided',
-      HttpStatus.BAD_REQUEST,
-    );
   }
 
   private async verifyPassword(
@@ -73,12 +73,6 @@ export class AuthService {
 
       return createdUser;
     } catch (error) {
-      if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new HttpException(
-          'User with that email already exists',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
       throw new HttpException(
         'Something went wrong',
         HttpStatus.INTERNAL_SERVER_ERROR,

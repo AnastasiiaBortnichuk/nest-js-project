@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
-import { DatabaseModule } from '../database/database.module';
-import { ProductsController } from './products.controller';
-import { Cosmetics } from './products.entity';
-import { ProductsService } from './products.service';
+import { DatabaseModule } from '../../database/database.module';
+import { ProductsController } from '../products.controller';
+import { Cosmetics } from '../products.entity';
+import { ProductsService } from '../products.service';
 import { ConfigModule } from '@nestjs/config';
-import { TestProduct } from '../../common';
+import { TestProduct } from '../../../common';
 
 describe('ProductsController', () => {
   let moduleRef: TestingModule;
@@ -22,6 +22,7 @@ describe('ProductsController', () => {
       controllers: [ProductsController],
       providers: [ProductsService],
     }).compile();
+
     productsController = moduleRef.get<ProductsController>(ProductsController);
     productsService = moduleRef.get<ProductsService>(ProductsService);
   });
@@ -57,9 +58,50 @@ describe('ProductsController', () => {
         .spyOn(productsService, 'getProductById')
         .mockImplementation(async () => await result);
 
-      expect(productsController.getProductById('2', 'product')).toStrictEqual(
+      expect(productsController.getProductById(2, 'product')).toStrictEqual(
         result,
       );
+    });
+  });
+
+  describe('addProduct', () => {
+    it('should add new product', async () => {
+      jest
+        .spyOn(productsService, 'addProduct')
+        .mockImplementation((TestProduct: Cosmetics) =>
+          Promise.resolve({ id: 'a uuid', ...TestProduct }),
+        );
+
+      await expect(productsController.addProduct(TestProduct)).resolves.toEqual(
+        { id: 'a uuid', ...TestProduct },
+      );
+    });
+  });
+
+  describe('updateProduct', () => {
+    it('should update existing product', async () => {
+      jest
+        .spyOn(productsService, 'updateProduct')
+        .mockImplementation((id: 7, TestProduct: Cosmetics) =>
+          Promise.resolve({ id, ...TestProduct }),
+        );
+
+      await expect(
+        productsController.updateProduct(7, TestProduct),
+      ).resolves.toEqual({ id: 7, ...TestProduct });
+    });
+  });
+
+  describe('deleteProduct', () => {
+    it('should delete product', async () => {
+      jest
+        .spyOn(productsService, 'deleteProduct')
+        .mockImplementation((id: 7) => Promise.resolve({ id, ...TestProduct }));
+
+      await expect(productsController.deleteProduct(7)).resolves.toEqual({
+        id: 7,
+        ...TestProduct,
+      });
     });
   });
 });

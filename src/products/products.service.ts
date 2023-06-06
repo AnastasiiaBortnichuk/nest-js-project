@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cosmetics } from './products.entity';
@@ -21,10 +21,8 @@ export class ProductsService {
     );
   }
 
-  async getProductById(id: string): Promise<Cosmetics> {
-    return (await this.productsRepository.find()).find(
-      (product) => product.id === +id,
-    );
+  async getProductById(id: number): Promise<Cosmetics> {
+    return await this.productsRepository.findOne({ where: { id } });
   }
 
   async addProduct(product: CreateProductDto): Promise<Cosmetics> {
@@ -34,23 +32,34 @@ export class ProductsService {
     return newProduct;
   }
 
-  async updateProduct(id: string, product: CreateProductDto) {
-    await this.productsRepository.update(id, product);
-    const allProducts = await this.productsRepository.find();
-    const updatedProduct = await allProducts.find(
-      (product) => product.id === +id,
-    );
-    if (updatedProduct) {
-      return updatedProduct;
+  async updateProduct(id: number, product: CreateProductDto) {
+    const productToUpdate = await this.productsRepository.findOne({
+      where: { id },
+    });
+    if (productToUpdate) {
+      await this.productsRepository.update(id, product);
+
+      return productToUpdate;
+    } else {
+      throw new HttpException(
+        'Unable to update a non-existent product',
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
 
   async deleteProduct(id: number) {
-    const allProducts = await this.productsRepository.find();
-    const productToDelete = await allProducts.find(
-      (product) => product.id === id,
-    );
+    const productToDelete = await this.productsRepository.findOne({
+      where: { id },
+    });
 
-    return await this.productsRepository.remove(productToDelete);
+    if (productToDelete) {
+      return await this.productsRepository.remove(productToDelete);
+    } else {
+      throw new HttpException(
+        'Unable to delete a non-existent product',
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 }
