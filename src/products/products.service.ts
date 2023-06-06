@@ -16,9 +16,9 @@ export class ProductsService {
   }
 
   async getProductsByType(type: string): Promise<Cosmetics[]> {
-    return (await this.productsRepository.find()).filter(
-      (product) => product.product_type === type,
-    );
+    return await this.productsRepository.find({
+      where: { product_type: type },
+    });
   }
 
   async getProductById(id: number): Promise<Cosmetics> {
