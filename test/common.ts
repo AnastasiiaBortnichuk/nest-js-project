@@ -1,4 +1,4 @@
-import Role from './src/users/role/role.enum';
+import Role from '../src/users/role/role.enum';
 
 export const TestProduct = {
   id: 2,

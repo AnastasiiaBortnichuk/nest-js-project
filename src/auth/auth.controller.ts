@@ -14,13 +14,14 @@ import CreateUserDto from '../users/dto/createUser.dto';
 import RequestWithUser from './interfaces/requestWithUser.interface';
 import { LocalAuthenticationGuard } from './guards/localAuthentication.guard';
 import JwtAuthenticationGuard from './guards/jwt-authentication.guard';
+import Users from 'src/users/users.entity';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() registrationData: CreateUserDto) {
+  async register(@Body() registrationData: CreateUserDto): Promise<Users> {
     return this.authService.register(registrationData);
   }
 
@@ -32,9 +33,10 @@ export class AuthController {
 
     const cookie = await this.authService.getCookieWithJwtToken(user.id);
     res.setHeader('Set-Cookie', cookie);
-    user.password = undefined;
+    const userCopy = JSON.parse(JSON.stringify(user));
+    userCopy.password = undefined;
 
-    return res.send(user);
+    return res.send(userCopy);
   }
 
   @UseGuards(JwtAuthenticationGuard)
@@ -47,10 +49,11 @@ export class AuthController {
 
   @UseGuards(JwtAuthenticationGuard)
   @Get('profile')
-  authenticate(@Req() request: RequestWithUser) {
+  authenticate(@Req() request: RequestWithUser): Users {
     const { user } = request;
-    user.password = undefined;
+    const userCopy = JSON.parse(JSON.stringify(user));
+    userCopy.password = undefined;
 
-    return user;
+    return userCopy;
   }
 }

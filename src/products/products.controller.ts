@@ -11,7 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Cosmetics } from './products.entity';
+import { Products } from './products.entity';
 import { ProductsService } from './products.service';
 import Role from '../users/role/role.enum';
 import JwtAuthenticationGuard from '../auth/guards/jwt-authentication.guard';
@@ -23,12 +23,12 @@ import CreateProductDto from './dto/createProduct.dto';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
   @Get()
-  async getAllProducts(): Promise<Cosmetics[]> {
+  async getAllProducts(): Promise<Products[]> {
     return await this.productsService.getAllProducts();
   }
 
   @Get(':type')
-  async getProductsByType(@Param('type') type: string): Promise<Cosmetics[]> {
+  async getProductsByType(@Param('type') type: string): Promise<Products[]> {
     return await this.productsService.getProductsByType(type);
   }
 
@@ -36,13 +36,13 @@ export class ProductsController {
   async getProductById(
     @Param('id') id: number,
     @Query('product') product: string,
-  ): Promise<Cosmetics> {
+  ): Promise<Products> {
     return await this.productsService.getProductById(id);
   }
 
   @Post()
   @UseGuards(JwtAuthenticationGuard)
-  async addProduct(@Body() product: CreateProductDto) {
+  async addProduct(@Body() product: CreateProductDto): Promise<Products> {
     return this.productsService.addProduct(product);
   }
 
@@ -50,13 +50,13 @@ export class ProductsController {
   async updateProduct(
     @Param('id') id: number,
     @Body() product: CreateProductDto,
-  ) {
+  ): Promise<Products> {
     return this.productsService.updateProduct(id, product);
   }
 
   @Delete(':id')
   @UseGuards(RoleGuard(Role.Admin))
-  async deleteProduct(@Param('id') id: number) {
+  async deleteProduct(@Param('id') id: number): Promise<Products> {
     return this.productsService.deleteProduct(id);
   }
 }

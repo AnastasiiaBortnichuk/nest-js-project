@@ -1,9 +1,9 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TestProduct } from '../../../common';
+import { TestProduct } from '../../../test/common';
 import { DatabaseModule } from '../../database/database.module';
-import { Cosmetics } from '../products.entity';
+import { Products } from '../products.entity';
 import { ProductsService } from '../products.service';
 
 describe('ProductsService', () => {
@@ -15,7 +15,7 @@ describe('ProductsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ProductsService],
       imports: [
-        TypeOrmModule.forFeature([Cosmetics]),
+        TypeOrmModule.forFeature([Products]),
         DatabaseModule,
         ConfigModule.forRoot({ isGlobal: true }),
       ],

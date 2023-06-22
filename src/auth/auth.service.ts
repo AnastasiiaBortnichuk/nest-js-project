@@ -5,6 +5,7 @@ import { UsersService } from '../users/users.service';
 import CreateUserDto from 'src/users/dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
 import { TokenPayload } from './interfaces/tokenPayload.interface';
+import Users from 'src/users/users.entity';
 
 @Injectable()
 export class AuthService {
@@ -14,13 +15,17 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async getAuthenticatedUser(email: string, plainTextPassword: string) {
+  async getAuthenticatedUser(
+    email: string,
+    plainTextPassword: string,
+  ): Promise<Users> {
     try {
       const user = await this.usersService.getUserByEmail(email);
       await this.verifyPassword(plainTextPassword, user.password);
-      user.password = undefined;
+      const userCopy = JSON.parse(JSON.stringify(user));
+      userCopy.password = undefined;
 
-      return user;
+      return userCopy;
     } catch (error) {
       throw new HttpException(
         'Wrong credentials provided',
@@ -32,7 +37,7 @@ export class AuthService {
   private async verifyPassword(
     plainTextPassword: string,
     hashedPassword: string,
-  ) {
+  ): Promise<void> {
     const isPasswordMatching = await bcrypt.compare(
       plainTextPassword,
       hashedPassword,
@@ -45,7 +50,9 @@ export class AuthService {
     }
   }
 
-  async login(user: any) {
+  async login(user: any): Promise<{
+    access_token: string;
+  }> {
     const payload = { username: user.username, sub: user.userId };
 
     return {
@@ -53,7 +60,7 @@ export class AuthService {
     };
   }
 
-  async getCookieWithJwtToken(userId: number) {
+  async getCookieWithJwtToken(userId: number): Promise<string> {
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload);
 
@@ -62,16 +69,17 @@ export class AuthService {
     )}`;
   }
 
-  async register(registrationData: CreateUserDto) {
+  async register(registrationData: CreateUserDto): Promise<Users> {
     const hashedPassword = await bcrypt.hash(registrationData.password, 10);
     try {
       const createdUser = await this.usersService.createUser({
         ...registrationData,
         password: hashedPassword,
       });
-      createdUser.password = undefined;
+      const userCopy = JSON.parse(JSON.stringify(createdUser));
+      userCopy.password = undefined;
 
-      return createdUser;
+      return userCopy;
     } catch (error) {
       throw new HttpException(
         'Something went wrong',
@@ -80,7 +88,7 @@ export class AuthService {
     }
   }
 
-  getCookieForLogOut() {
+  getCookieForLogOut(): string {
     return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
   }
 }

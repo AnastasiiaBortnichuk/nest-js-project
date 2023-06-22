@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 import { DatabaseModule } from '../../database/database.module';
 import { ProductsController } from '../products.controller';
-import { Cosmetics } from '../products.entity';
+import { Products } from '../products.entity';
 import { ProductsService } from '../products.service';
 import { ConfigModule } from '@nestjs/config';
-import { TestProduct } from '../../../common';
+import { TestProduct } from '../../../test/common';
 
 describe('ProductsController', () => {
   let moduleRef: TestingModule;
@@ -15,7 +15,7 @@ describe('ProductsController', () => {
   beforeEach(async () => {
     moduleRef = await Test.createTestingModule({
       imports: [
-        TypeOrmModule.forFeature([Cosmetics]),
+        TypeOrmModule.forFeature([Products]),
         DatabaseModule,
         ConfigModule.forRoot({ isGlobal: true }),
       ],
@@ -28,7 +28,7 @@ describe('ProductsController', () => {
   });
 
   describe('getAllProducts', () => {
-    const result = new Promise<Cosmetics[]>(() => new Array(TestProduct));
+    const result = new Promise<Products[]>(() => new Array(TestProduct));
     it('should return All products object', async () => {
       jest
         .spyOn(productsService, 'getAllProducts')
@@ -39,7 +39,7 @@ describe('ProductsController', () => {
   });
 
   describe('getProductsByType', () => {
-    const result = new Promise<Cosmetics[]>(() => new Array(TestProduct));
+    const result = new Promise<Products[]>(() => new Array(TestProduct));
     it('should return products object of given type', async () => {
       jest
         .spyOn(productsService, 'getProductsByType')
@@ -52,7 +52,7 @@ describe('ProductsController', () => {
   });
 
   describe('getProductById', () => {
-    const result = new Promise<Cosmetics>(() => new Array(TestProduct));
+    const result = new Promise<Products>(() => new Array(TestProduct));
     it('should return product object', async () => {
       jest
         .spyOn(productsService, 'getProductById')
@@ -68,7 +68,7 @@ describe('ProductsController', () => {
     it('should add new product', async () => {
       jest
         .spyOn(productsService, 'addProduct')
-        .mockImplementation((TestProduct: Cosmetics) =>
+        .mockImplementation((TestProduct: Products) =>
           Promise.resolve({ id: 'a uuid', ...TestProduct }),
         );
 
@@ -82,7 +82,7 @@ describe('ProductsController', () => {
     it('should update existing product', async () => {
       jest
         .spyOn(productsService, 'updateProduct')
-        .mockImplementation((id: 7, TestProduct: Cosmetics) =>
+        .mockImplementation((id: 7, TestProduct: Products) =>
           Promise.resolve({ id, ...TestProduct }),
         );
 

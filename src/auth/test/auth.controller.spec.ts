@@ -7,7 +7,7 @@ import { AuthController } from '../auth.controller';
 import { DatabaseModule } from '../../database/database.module';
 import { Users } from '../../users/users.entity';
 import { UsersService } from '../../users/users.service';
-import { TestUser } from '../../../common';
+import { TestUser } from '../../../test/common';
 import RequestWithUser from '../interfaces/requestWithUser.interface';
 
 describe('AuthController', () => {
