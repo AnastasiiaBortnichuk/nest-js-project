@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Cosmetics } from '../products/products.entity';
+import { Products } from '../products/products.entity';
+import { Users } from '../users/users.entity';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { Cosmetics } from '../products/products.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: 'postgres',
-        entities: [Cosmetics],
+        entities: [Products, Users],
         synchronize: true,
       }),
     }),

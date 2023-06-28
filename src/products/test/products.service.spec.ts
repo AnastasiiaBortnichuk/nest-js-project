@@ -1,21 +1,21 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TestProduct } from '../../common';
-import { DatabaseModule } from '../database/database.module';
-import { Cosmetics } from './products.entity';
-import { ProductsService } from './products.service';
+import { TestProduct } from '../../../test/common';
+import { DatabaseModule } from '../../database/database.module';
+import { Products } from '../products.entity';
+import { ProductsService } from '../products.service';
 
 describe('ProductsService', () => {
   let service: ProductsService;
-  const TotalProducts = 931;
+  const TotalProducts = 928;
   const EyebrowProducts = 49;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ProductsService],
       imports: [
-        TypeOrmModule.forFeature([Cosmetics]),
+        TypeOrmModule.forFeature([Products]),
         DatabaseModule,
         ConfigModule.forRoot({ isGlobal: true }),
       ],
@@ -39,7 +39,7 @@ describe('ProductsService', () => {
   });
 
   it('getProductById - should work', async () => {
-    const result = await service.getProductById('2');
+    const result = await service.getProductById(2);
     expect(result).toEqual(TestProduct);
   });
 });
