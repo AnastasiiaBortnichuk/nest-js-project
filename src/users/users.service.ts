@@ -11,11 +11,11 @@ export class UsersService {
     private readonly usersRepository: Repository<Users>,
   ) {}
 
-  async getAllUsers(): Promise<Users[]> {
+  public async getAllUsers(): Promise<Users[]> {
     return await this.usersRepository.find();
   }
 
-  async createUser(userData: CreateUserDto): Promise<Users | undefined> {
+  public async createUser(userData: CreateUserDto): Promise<Users | undefined> {
     const existingUser = await this.getUserByEmail(userData.email);
     if (!existingUser) {
       const newUser = this.usersRepository.create(userData);
@@ -29,7 +29,7 @@ export class UsersService {
     );
   }
 
-  async getUserByEmail(email: string): Promise<Users | undefined> {
+  public async getUserByEmail(email: string): Promise<Users | undefined> {
     const user = await this.usersRepository.findOne({ where: { email } });
     if (user) {
       return user;
@@ -40,7 +40,7 @@ export class UsersService {
     );
   }
 
-  async getUserById(id: number): Promise<Users | undefined> {
+  public async getUserById(id: number): Promise<Users | undefined> {
     const user = await this.usersRepository.findOne({ where: { id } });
     if (user) {
       return user;

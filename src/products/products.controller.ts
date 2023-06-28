@@ -23,17 +23,19 @@ import CreateProductDto from './dto/createProduct.dto';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
   @Get()
-  async getAllProducts(): Promise<Products[]> {
+  public async getAllProducts(): Promise<Products[]> {
     return await this.productsService.getAllProducts();
   }
 
   @Get(':type')
-  async getProductsByType(@Param('type') type: string): Promise<Products[]> {
+  public async getProductsByType(
+    @Param('type') type: string,
+  ): Promise<Products[]> {
     return await this.productsService.getProductsByType(type);
   }
 
   @Get('product/:id')
-  async getProductById(
+  public async getProductById(
     @Param('id') id: number,
     @Query('product') product: string,
   ): Promise<Products> {
@@ -42,12 +44,16 @@ export class ProductsController {
 
   @Post()
   @UseGuards(JwtAuthenticationGuard)
-  async addProduct(@Body() product: CreateProductDto): Promise<Products> {
+  @UseGuards(RoleGuard(Role.User))
+  public async addProduct(
+    @Body() product: CreateProductDto,
+  ): Promise<Products> {
     return this.productsService.addProduct(product);
   }
 
   @Put(':id')
-  async updateProduct(
+  @UseGuards(RoleGuard(Role.User))
+  public async updateProduct(
     @Param('id') id: number,
     @Body() product: CreateProductDto,
   ): Promise<Products> {
@@ -56,7 +62,7 @@ export class ProductsController {
 
   @Delete(':id')
   @UseGuards(RoleGuard(Role.Admin))
-  async deleteProduct(@Param('id') id: number): Promise<Products> {
+  public async deleteProduct(@Param('id') id: number): Promise<Products> {
     return this.productsService.deleteProduct(id);
   }
 }

@@ -1,8 +1,28 @@
-import { IsNotEmpty } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  ArrayUnique,
+  IsArray,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
+class ProductColorDto {
+  @IsNotEmpty()
+  hex_value: string;
+
+  @IsNotEmpty()
+  colour_name: string;
+}
 
 export class CreateProductDto {
+  @IsOptional()
+  @IsNumberString()
   id?: number;
 
+  @IsNotEmpty()
   brand: string;
 
   @IsNotEmpty()
@@ -18,8 +38,14 @@ export class CreateProductDto {
 
   price_sign: string | null;
 
-  product_colors: { hex_value: string; colour_name: string }[];
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
+  @ValidateNested({ each: true })
+  @Type(() => ProductColorDto)
+  product_colors: ProductColorDto[];
 
+  @IsNumberString()
   price: string;
 }
 

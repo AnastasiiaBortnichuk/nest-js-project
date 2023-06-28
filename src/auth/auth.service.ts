@@ -15,14 +15,14 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async getAuthenticatedUser(
+  public async getAuthenticatedUser(
     email: string,
     plainTextPassword: string,
   ): Promise<Users> {
     try {
       const user = await this.usersService.getUserByEmail(email);
       await this.verifyPassword(plainTextPassword, user.password);
-      const userCopy = JSON.parse(JSON.stringify(user));
+      const userCopy = { ...user };
       userCopy.password = undefined;
 
       return userCopy;
@@ -50,7 +50,7 @@ export class AuthService {
     }
   }
 
-  async login(user: any): Promise<{
+  public async login(user: any): Promise<{
     access_token: string;
   }> {
     const payload = { username: user.username, sub: user.userId };
@@ -60,7 +60,7 @@ export class AuthService {
     };
   }
 
-  async getCookieWithJwtToken(userId: number): Promise<string> {
+  public async getCookieWithJwtToken(userId: number): Promise<string> {
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload);
 
@@ -69,14 +69,14 @@ export class AuthService {
     )}`;
   }
 
-  async register(registrationData: CreateUserDto): Promise<Users> {
+  public async register(registrationData: CreateUserDto): Promise<Users> {
     const hashedPassword = await bcrypt.hash(registrationData.password, 10);
     try {
       const createdUser = await this.usersService.createUser({
         ...registrationData,
         password: hashedPassword,
       });
-      const userCopy = JSON.parse(JSON.stringify(createdUser));
+      const userCopy = { ...createdUser };
       userCopy.password = undefined;
 
       return userCopy;
@@ -88,7 +88,7 @@ export class AuthService {
     }
   }
 
-  getCookieForLogOut(): string {
+  public getCookieForLogOut(): string {
     return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
   }
 }

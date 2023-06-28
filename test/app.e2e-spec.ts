@@ -1,7 +1,7 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { AppModule } from './../src/app.module';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { TestProduct } from './common';
 
 describe('AppController (e2e)', () => {
@@ -19,7 +19,7 @@ describe('AppController (e2e)', () => {
   it('/ (GET)', () => {
     return request(app.getHttpServer())
       .get('/product/2')
-      .expect(200)
+      .expect(HttpStatus.OK)
       .expect(TestProduct);
   });
 });

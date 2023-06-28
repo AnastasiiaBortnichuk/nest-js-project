@@ -1,4 +1,5 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { HttpStatus } from '@nestjs/common';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -86,7 +87,7 @@ describe('AuthController', () => {
       await authController.logOut(req as any, res as any);
 
       expect(res.setHeader).toHaveBeenCalledWith('Set-Cookie', logoutCookie);
-      expect(res.sendStatus).toHaveBeenCalledWith(200);
+      expect(res.sendStatus).toHaveBeenCalledWith(HttpStatus.OK);
     });
   });
 

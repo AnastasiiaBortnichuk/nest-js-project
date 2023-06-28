@@ -11,28 +11,28 @@ export class ProductsService {
     private readonly productsRepository: Repository<Products>,
   ) {}
 
-  async getAllProducts(): Promise<Products[]> {
+  public async getAllProducts(): Promise<Products[]> {
     return await this.productsRepository.find();
   }
 
-  async getProductsByType(type: string): Promise<Products[]> {
+  public async getProductsByType(type: string): Promise<Products[]> {
     return await this.productsRepository.find({
       where: { product_type: type },
     });
   }
 
-  async getProductById(id: number): Promise<Products> {
+  public async getProductById(id: number): Promise<Products> {
     return await this.productsRepository.findOne({ where: { id } });
   }
 
-  async addProduct(product: CreateProductDto): Promise<Products> {
+  public async addProduct(product: CreateProductDto): Promise<Products> {
     const newProduct = await this.productsRepository.create(product);
     await this.productsRepository.save(newProduct);
 
     return newProduct;
   }
 
-  async updateProduct(
+  public async updateProduct(
     id: number,
     product: CreateProductDto,
   ): Promise<Products> {
@@ -56,7 +56,7 @@ export class ProductsService {
     }
   }
 
-  async deleteProduct(id: number): Promise<Products> {
+  public async deleteProduct(id: number): Promise<Products> {
     const productToDelete = await this.productsRepository.findOne({
       where: { id },
     });
